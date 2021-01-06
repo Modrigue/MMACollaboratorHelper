@@ -24,6 +24,14 @@ namespace MMACollaboratorHelper
 
         #region Web functions
 
+        public static void Initialize()
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+                | SecurityProtocolType.Tls11
+                | SecurityProtocolType.Tls12
+                | SecurityProtocolType.Ssl3;
+        }
+
         public static string GetWebPageSourceHTML(string url)
         {
             string sourceHTML = "";
@@ -56,7 +64,10 @@ namespace MMACollaboratorHelper
                     readStream.Close();
                 }
             }
-            catch { }
+            catch (Exception /*ex*/)
+            {
+                //
+            }
 
             return sourceHTML;
         }
@@ -143,7 +154,7 @@ namespace MMACollaboratorHelper
 
         public static bool IsStringURL(string text)
         {
-            return text.StartsWith("http://", StringComparison.OrdinalIgnoreCase);
+            return text.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || text.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
         }
 
         public static string TrimTime(string time)

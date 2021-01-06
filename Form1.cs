@@ -27,8 +27,8 @@ namespace MMACollaboratorHelper
             + "\n\nFor example:"
             + "\n - \"iron maiden\" will search band Iron Maiden,"
             + "\n - \"iro\" will search bands Iron Maiden, Iron Savior..."
-            + "\n - \"http://www.metal-archives.com/bands/Abigail/1282\" will search band Abigail from Japan"
-            + "\n    (the prefix \"http://\") is optional";
+            + "\n - \"https://www.metal-archives.com/bands/Abigail/1282\" will search band Abigail from Japan"
+            + "\n    (the prefix \"https://\") is optional";
 
         private delegate void changeProgressLabel(string str);
 
@@ -47,6 +47,8 @@ namespace MMACollaboratorHelper
             nbNewAlbumsProcessed_ = 0;
             downloadNewAlbumsOnly_ = true; // default
             isProcessing_ = false;
+
+            Tools.Initialize();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -64,7 +66,7 @@ namespace MMACollaboratorHelper
             }
 
             // parse genres
-            string urlSite = "http://www.metalmusicarchives.com/";
+            string urlSite = "https://www.metalmusicarchives.com/";
             //Tools.LogEvent("Searching albums of " + band + "...");
             string sourceHTML = Tools.GetWebPageSourceHTML(urlSite);
             MMAParseGenres parsedGenres = new MMAParseGenres(sourceHTML);
@@ -149,7 +151,7 @@ namespace MMACollaboratorHelper
 
                 // handle URLs
                 if (bandPrefixOrUrl.StartsWith("www.", StringComparison.OrdinalIgnoreCase))
-                    bandPrefixOrUrl = "http://" + bandPrefixOrUrl;
+                    bandPrefixOrUrl = "https://" + bandPrefixOrUrl;
                 if (!Tools.IsStringURL(bandPrefixOrUrl))
                 {
                     bandPrefixOrUrl = Tools.ToTitleCase(bandPrefixOrUrl);
@@ -242,7 +244,7 @@ namespace MMACollaboratorHelper
             try
             {
                 // get genre bands
-                string urlSite = "http://www.metalmusicarchives.com";
+                string urlSite = "https://www.metalmusicarchives.com";
                 string urlGenre = urlSite + genreURL;
                 string sourceHTML = Tools.GetWebPageSourceHTML(urlGenre);
                 MMAParseGenreBands parsedGenreBands = new MMAParseGenreBands(sourceHTML);
@@ -327,7 +329,7 @@ namespace MMACollaboratorHelper
                         continue;
 
                     string genreURL = item.Url;
-                    string urlSite = "http://www.metalmusicarchives.com";
+                    string urlSite = "https://www.metalmusicarchives.com";
                     string urlGenre = urlSite + genreURL;
                     string sourceHTML = Tools.GetWebPageSourceHTML(urlGenre);
                     MMAParseGenreBands parsedGenreBands = new MMAParseGenreBands(sourceHTML);
@@ -413,7 +415,7 @@ namespace MMACollaboratorHelper
                             continue;
 
                         string genreURL = item.Url;
-                        string urlSite = "http://www.metalmusicarchives.com";
+                        string urlSite = "https://www.metalmusicarchives.com";
                         string urlGenre = urlSite + genreURL;
                         string sourceHTML = Tools.GetWebPageSourceHTML(urlGenre);
                         MMAParseGenreBands parsedGenreBands = new MMAParseGenreBands(sourceHTML);
@@ -465,7 +467,7 @@ namespace MMACollaboratorHelper
 
                 // build URL suffix
                 string bandSuffix = bandNameOrUrl.Replace(' ', '_');
-                urlBand = "http://www.metal-archives.com/bands/" + bandSuffix;
+                urlBand = "https://www.metal-archives.com/bands/" + bandSuffix;
 
                 logText = downloadNewAlbumsOnly_ ?
                     "   Searching new albums of " + bandNameOrUrl + "..." :
@@ -510,7 +512,7 @@ namespace MMACollaboratorHelper
             List<string> existingAlbumsNamesYears = new List<string>();
             if (downloadNewAlbumsOnly_ && !String.IsNullOrEmpty(existingBandURLSuffix))
             {
-                string existingBandURL = "http://www.metalmusicarchives.com" + existingBandURLSuffix;
+                string existingBandURL = "https://www.metalmusicarchives.com" + existingBandURLSuffix;
                 string sourceHTMLExistingBandPage = Tools.GetWebPageSourceHTML(existingBandURL);
                 MMAParseExistingBandAlbums existingBandAlbums = new MMAParseExistingBandAlbums(sourceHTMLExistingBandPage);
                 existingAlbumsNamesYears = existingBandAlbums.AlbumsNamesYears;
@@ -606,10 +608,10 @@ namespace MMACollaboratorHelper
                 
                 // for debug purposes only
                 /*
-                //string testAlbumURL = "http://www.metal-archives.com/albums/Killswitch_Engage/Incarnate/558828";
-                //string testAlbumURL = "http://www.metal-archives.com/albums/Killswitch_Engage/Incarnate/568298";
-                //string testAlbumURL = "http://www.metal-archives.com/albums/Killswitch_Engage/Killswitch_Engage/237410";
-                string testAlbumURL = "http://www.metal-archives.com/albums/Ad_Baculum/Blackness_Doctrine/317809";
+                //string testAlbumURL = "https://www.metal-archives.com/albums/Killswitch_Engage/Incarnate/558828";
+                //string testAlbumURL = "https://www.metal-archives.com/albums/Killswitch_Engage/Incarnate/568298";
+                //string testAlbumURL = "https://www.metal-archives.com/albums/Killswitch_Engage/Killswitch_Engage/237410";
+                string testAlbumURL = "https://www.metal-archives.com/albums/Ad_Baculum/Blackness_Doctrine/317809";
                 string sourceHTMLAlbumPage = Tools.GetWebPageSourceHTML(testAlbumURL);
                 EMParseAlbumPage page = new EMParseAlbumPage(sourceHTMLAlbumPage, country, bandPage.Genre, testAlbumURL);
                 */

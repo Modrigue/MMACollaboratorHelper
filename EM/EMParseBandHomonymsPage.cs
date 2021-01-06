@@ -104,9 +104,10 @@ namespace MMACollaboratorHelper
                     if (node.Attributes.Contains("href"))
                     {
                         string url = node.Attributes["href"].Value;
-                        if(url.StartsWith("http://www.metal-archives.com/bands/" + band_ + "/"))
-
-                        urls.Add(url);
+                        if(url.StartsWith("http://www.metal-archives.com/bands/" + band_ + "/")
+                        || url.StartsWith("https://www.metal-archives.com/bands/" + band_ + "/")
+                            )
+                            urls.Add(url);
                     }
                 }
             }

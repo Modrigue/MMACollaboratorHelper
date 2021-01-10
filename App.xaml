@@ -1,0 +1,11 @@
+﻿<Application x:Class="MMACollaboratorHelper.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:MMACollaboratorHelper"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <BitmapImage x:Key="MMA_Logo" UriSource="MMA_Logo.jpg" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

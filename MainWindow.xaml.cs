@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Threading;
-using System.Windows.Forms;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace MMACollaboratorHelper
 {
-    public partial class Form1 : Form
+    /// <summary>
+    /// Logique d'interaction pour MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
     {
         public static event EventHandler OnSearchBandsParams;
         public static event EventHandler OnProcessBandParams;
@@ -22,9 +25,9 @@ namespace MMACollaboratorHelper
         private Thread threadProcess_;
         private bool isProcessing_;
 
-        private const string tooltipTextboxBandText =
+        private const string tooltipTextboxBandStr =
             "Enter band name, prefix or EM URL (case insensitive)"
-            + "\n\nFor example:"
+            + "\n\nExample:"
             + "\n - \"iron maiden\" will search band Iron Maiden,"
             + "\n - \"iro\" will search bands Iron Maiden, Iron Savior..."
             + "\n - \"https://www.metal-archives.com/bands/Abigail/1282\" will search band Abigail from Japan"
@@ -32,11 +35,11 @@ namespace MMACollaboratorHelper
 
         private delegate void changeProgressLabel(string str);
 
-        public Form1()
+        public MainWindow()
         {
             InitializeComponent();
 
-            tooltipTextboxBand.SetToolTip(textboxBand, tooltipTextboxBandText);
+            textboxBand.ToolTip = tooltipTextboxBandStr;
 
             labelVersion.Text = "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
@@ -51,17 +54,17 @@ namespace MMACollaboratorHelper
             Tools.Initialize();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Tools.InitLogsFiles();
 
             // check if required dlls are present
             string execDir = Environment.CurrentDirectory;
             string dllName = "HtmlAgilityPack.dll";
-            string dllPath = Path.Combine(execDir, dllName);
+            string dllPath = System.IO.Path.Combine(execDir, dllName);
             if (!File.Exists(dllPath))
             {
-                MessageBox.Show("Library " + dllName + " not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Library " + dllName + " not found", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Close();
             }
 
@@ -72,8 +75,8 @@ namespace MMACollaboratorHelper
             MMAParseGenres parsedGenres = new MMAParseGenres(sourceHTML);
 
             InitComboboxLetters();
-            InitComboboxGenres(parsedGenres);  
-          
+            InitComboboxGenres(parsedGenres);
+
             // for debug purposes only
             //textboxBand.Text = "blind guardian";
             //textboxBand.Text = "cirith ungol";
@@ -92,10 +95,12 @@ namespace MMACollaboratorHelper
             //textboxBand.Text = "www.metal-archives.com/bands/La_Torture_des_T%C3%A9n%C3%A8bres/3540410503";
         }
 
+        #region Combo boxes initialization
+
         public void InitComboboxGenres(MMAParseGenres parsedGenres)
         {
-            comboboxGenres.DisplayMember = "Genre";
-            comboboxGenres.ValueMember = "Url";
+            comboboxGenres.DisplayMemberPath = "Genre";
+            comboboxGenres.SelectedValuePath = "Url";
 
             // fill combobox
             int index = 0;
@@ -121,9 +126,11 @@ namespace MMACollaboratorHelper
             comboboxFilters.SelectedIndex = 2; // "A"
         }
 
+        #endregion
+
         #region Interface callbacks
 
-        private void buttonGo_Click(object sender, EventArgs e)
+        private void buttonGo_Click(object sender, RoutedEventArgs e)
         {
             // stop process
             if (isProcessing_)
@@ -142,7 +149,7 @@ namespace MMACollaboratorHelper
 
             // start process
 
-            downloadNewAlbumsOnly_ = checkboxDownloadNewAlbumsOnly.Checked;
+            downloadNewAlbumsOnly_ = (bool)checkboxNewAlbumsOnly.IsChecked;
 
             bool hasBand = !String.IsNullOrEmpty(textboxBand.Text);
             if (hasBand)
@@ -155,13 +162,13 @@ namespace MMACollaboratorHelper
                 if (!Tools.IsStringURL(bandPrefixOrUrl))
                 {
                     bandPrefixOrUrl = Tools.ToTitleCase(bandPrefixOrUrl);
-                    labelStatus.Text = "Searching bands '" + bandPrefixOrUrl + "...'";
+                    labelStatus.Content = "Searching bands '" + bandPrefixOrUrl + "...'";
                 }
                 else
-                    labelStatus.Text = "Searching URL " + bandPrefixOrUrl;
+                    labelStatus.Content = "Searching URL " + bandPrefixOrUrl;
 
-                labelStatus.Visible = true;
-                
+                labelStatus.Visibility = Visibility.Visible;
+
                 threadProcess_ = new Thread(() => processByBandPrefixOrUrl(bandPrefixOrUrl));
             }
             else
@@ -175,8 +182,8 @@ namespace MMACollaboratorHelper
                 string filter = comboboxFilters.SelectedItem as string;
                 Tools.LogEvent("SEARCHING " + genre + " BANDS " + "'" + filter + "'...");
 
-                labelStatus.Visible = true;
-                labelStatus.Text = "Searching bands...";
+                labelStatus.Visibility = Visibility.Visible;
+                labelStatus.Content = "Searching bands...";
 
                 threadProcess_ = new Thread(() => processByGenreAndFilter(genreURL, filter));
             }
@@ -188,17 +195,17 @@ namespace MMACollaboratorHelper
             threadProcess_.Start();
 
             while (isProcessing_)
-                Application.DoEvents();
+                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
 
             // update status label
             string statusText = downloadNewAlbumsOnly_ ?
                 nbNewAlbumsProcessed_.ToString() + " new album(s) processed" :
                 nbNewAlbumsProcessed_.ToString() + " album(s) processed";
-            labelStatus.Text = statusText;
+            labelStatus.Content = statusText;
             updateGUI();
         }
 
-        private void buttonQuit_Click(object sender, EventArgs e)
+        private void buttonQuit_Click(object sender, RoutedEventArgs e)
         {
             if (threadProcess_ != null)
                 threadProcess_.Abort();
@@ -208,32 +215,25 @@ namespace MMACollaboratorHelper
             this.Close();
         }
 
-        private void textboxBand_TextChanged(object sender, EventArgs e)
+        private void textboxBand_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Return)
+                buttonGo_Click(sender, e);
+        }
+
+        private void textboxBand_TextChanged(object sender, TextChangedEventArgs e)
         {
             // update tooltip
             string tooltip = String.IsNullOrEmpty(textboxBand.Text) ?
-                tooltipTextboxBandText : textboxBand.Text;
-            tooltipTextboxBand.SetToolTip(textboxBand, tooltip);
+                tooltipTextboxBandStr : textboxBand.Text;
+            textboxBand.ToolTip = tooltip;
 
             updateGUI();
         }
 
-        private void textboxBand_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-                buttonGo_Click(sender, e);
-        }
-
-        private void textboxBand_Click(object sender, EventArgs e)
+        private void textboxBand_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             textboxBand.SelectAll();
-        }
-
-        private void Form1_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            //if (isProcessing_)
-            //    if (e.KeyChar == Keys.Escape)
-            //        buttonGo_Click(sender, e);
         }
 
         #endregion
@@ -441,7 +441,7 @@ namespace MMACollaboratorHelper
 
                                 // skip if already processed
                                 if (processed) continue;
-                                
+
                                 // get existing band albums
                                 processedBandURLs.Add(bandURLSuffix);
                                 existingAlbumsNamesYears.AddRange(getExistingAlbums(band, bandURLSuffix));
@@ -545,7 +545,7 @@ namespace MMACollaboratorHelper
 
             int nbFoundAlbums = bandPage.AlbumsURLs.Count;
             string logText = downloadNewAlbumsOnly_ ?
-                "   " + nbFoundAlbums + " new album(s) found for " + band + " (" + country + ")":
+                "   " + nbFoundAlbums + " new album(s) found for " + band + " (" + country + ")" :
                 "   " + nbFoundAlbums + " album(s) found for " + band + " (" + country + ")";
             Tools.LogEvent(logText);
 
@@ -589,8 +589,8 @@ namespace MMACollaboratorHelper
                 // check if album data is already downloaded
                 {
                     string downloadFilePath = Tools.DownloadFilePath(band, albumName, albumYear);
-                    bool infoDownloaded = File.Exists(Path.Combine(downloadFilePath + ".txt"));
-                    bool coverDownloaded = File.Exists(Path.Combine(downloadFilePath + ".jpg"));
+                    bool infoDownloaded = File.Exists(System.IO.Path.Combine(downloadFilePath + ".txt"));
+                    bool coverDownloaded = File.Exists(System.IO.Path.Combine(downloadFilePath + ".jpg"));
 
                     // if album data already downloaded, skip
                     if (infoDownloaded && coverDownloaded)
@@ -605,7 +605,7 @@ namespace MMACollaboratorHelper
                 string sourceHTMLAlbumPage = Tools.GetWebPageSourceHTML(albumURL);
                 Tools.LogEvent("      Processing album \'" + band + " (" + country + ")" + " - " + albumName + "\' (" + albumYear + ")");
                 EMParseAlbumPage page = new EMParseAlbumPage(sourceHTMLAlbumPage, country, bandPage.Genre, albumURL);
-                
+
                 // for debug purposes only
                 /*
                 //string testAlbumURL = "https://www.metal-archives.com/albums/Killswitch_Engage/Incarnate/558828";
@@ -644,21 +644,21 @@ namespace MMACollaboratorHelper
 
         private void updateGUI()
         {
-            buttonGo.Text = isProcessing_ ? "Stop" : "GO!";
+            buttonGo.Content = isProcessing_ ? "Stop" : "GO!";
             bool hasBand = !String.IsNullOrEmpty(textboxBand.Text);
 
-            labelGenre.Enabled = !hasBand; //&& !isProcessing_;
-            labelFilter.Enabled = !hasBand; //&& !isProcessing_;
-            comboboxGenres.Enabled = !hasBand && !isProcessing_;
-            comboboxFilters.Enabled = !hasBand && !isProcessing_;
+            labelGenre.IsEnabled = !hasBand; //&& !isProcessing_;
+            labelFilter.IsEnabled = !hasBand; //&& !isProcessing_;
+            comboboxGenres.IsEnabled = !hasBand && !isProcessing_;
+            comboboxFilters.IsEnabled = !hasBand && !isProcessing_;
 
-            labelBand.Enabled = !isProcessing_ || hasBand;
-            textboxBand.Enabled = !isProcessing_;
-            checkboxDownloadNewAlbumsOnly.Enabled = !isProcessing_;
+            labelBand.IsEnabled = !isProcessing_ || hasBand;
+            textboxBand.IsEnabled = !isProcessing_;
+            checkboxNewAlbumsOnly.IsEnabled = !isProcessing_;
 
-            progressBar1.Visible = isProcessing_;
+            progressbar.Visibility = isProcessing_ ? Visibility.Visible : Visibility.Hidden;
 
-            buttonQuit.Enabled = !isProcessing_;
+            buttonQuit.IsEnabled = !isProcessing_;
         }
 
         private void sendSearchBandsParams(string bandPrefix)
@@ -683,13 +683,13 @@ namespace MMACollaboratorHelper
         void Form1_OnSearchBandsParams(object sender, EventArgs e)
         {
             string bandPrefix = sender as string;
-            this.Invoke(new changeProgressLabel(changeProgressLabelText), "Searching bands '" + bandPrefix + "...'");
+            Dispatcher.Invoke(new changeProgressLabel(changeProgressLabelText), "Searching bands '" + bandPrefix + "...'");
         }
 
         private void Form1_OnProcessBandParams(object sender, EventArgs e)
         {
             string band = sender as string;
-            this.Invoke(new changeProgressLabel(changeProgressLabelText), "Processing " + band + "...");
+            Dispatcher.Invoke(new changeProgressLabel(changeProgressLabelText), "Processing " + band + "...");
         }
 
         void Form1_OnProcessAlbumParams(object sender, EventArgs e)
@@ -699,36 +699,13 @@ namespace MMACollaboratorHelper
             int index = values.Item2;
             int nbAlbums = values.Item3;
 
-            this.Invoke(new changeProgressLabel(changeProgressLabelText), "Processing " + band + " (album " + (index + 1).ToString() + "/" + nbAlbums + ")...");
-            //this.Invoke(new incrementProgressBar(incrementProgressBarValue), (float)(1.0 / (2 * nbDocs + 4)));
+            Dispatcher.Invoke(new changeProgressLabel(changeProgressLabelText), "Processing " + band + " (album " + (index + 1).ToString() + "/" + nbAlbums + ")...");
+            //Dispatcher.Invoke(new incrementProgressBar(incrementProgressBarValue), (float)(1.0 / (2 * nbDocs + 4)));
         }
 
         private void changeProgressLabelText(string text)
         {
-            labelStatus.Text = text;
-        }
-    }
-
-    // used for genres combo box
-    class GenreURL
-    {
-        string genre;
-        string url;
-
-        public string Genre
-        {
-            get { return genre; }
-        }
-
-        public string Url
-        {
-            get { return url; }
-        }
-
-        public GenreURL(string genre, string url)
-        {
-            this.genre = genre;
-            this.url = url;
+            labelStatus.Content = text;
         }
     }
 }

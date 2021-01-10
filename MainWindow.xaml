@@ -25,7 +25,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Parameters -->
-            <StackPanel Grid.Column="0" Cursor="Hand">
+            <StackPanel Grid.Column="0">
                 <Grid x:Name="gridParams" Height="128">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -40,11 +40,11 @@
 
                     <!-- Genre -->
                     <TextBlock Grid.Column="0" Grid.Row="0" x:Name="labelGenre" Text="Genre" FontSize="14" Margin="10 0 10 0" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
-                    <ComboBox Grid.Column="1" Grid.Row="0" x:Name="comboboxGenres" FontSize="14" Width="230" Height="30" Cursor="Hand" HorizontalAlignment="Left"></ComboBox>
+                    <ComboBox Grid.Column="1" Grid.Row="0" x:Name="comboboxGenres" FontSize="14" Width="230" Height="30" HorizontalAlignment="Left"></ComboBox>
 
                     <!-- Letter -->
                     <TextBlock Grid.Column="0" Grid.Row="1" x:Name="labelFilter" Text="Letter" FontSize="14" Margin="10 0 10 0" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
-                    <ComboBox Grid.Column="1" Grid.Row="1" x:Name="comboboxFilters" FontSize="14" Width="50" Height="30" Cursor="Hand" HorizontalAlignment="Left"></ComboBox>
+                    <ComboBox Grid.Column="1" Grid.Row="1" x:Name="comboboxFilters" FontSize="14" Width="50" Height="30" HorizontalAlignment="Left"></ComboBox>
 
                     <!-- Band -->
                     <TextBlock Grid.Column="0" Grid.Row="2" x:Name="labelBand" Text="Band" FontSize="14" Margin="10 0 10 0" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
@@ -67,6 +67,7 @@
 
     <Window.Resources>
         <Style TargetType="{x:Type ComboBox}">
+            <Setter Property="Cursor" Value="Hand" />
             <Style.Triggers>
                 <Trigger Property="IsEnabled" Value="False">
                     <Setter Property="Foreground" Value="Gray"/>
@@ -81,6 +82,7 @@
             </Style.Triggers>
         </Style>
         <Style TargetType="{x:Type CheckBox}">
+            <Setter Property="Cursor" Value="Hand" />
             <Style.Triggers>
                 <Trigger Property="IsEnabled" Value="False">
                     <Setter Property="Foreground" Value="Gray"/>

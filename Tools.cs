@@ -193,7 +193,7 @@ namespace MMACollaboratorHelper
             return dirDownload;
         }
 
-        public static string DownloadFilePath(string band, string album, string year)
+        public static string DownloadFilePath(string band, string album, string year, string type = "")
         {
             string bandString = Tools.RemoveWindowsForbiddenCharacters(band);
             string albumString = Tools.RemoveWindowsForbiddenCharacters(album);
@@ -205,6 +205,8 @@ namespace MMACollaboratorHelper
             // create file name
             //string filename = year + "_" + albumString;
             string filename = bandString.ToUpper() + "_" + year + "_" + albumString;
+            if (!String.IsNullOrEmpty(type))
+                filename += " (" + type + ")";
 
             //string dirBand = Path.Combine(DownloadDirectory(), bandString);
             //return Path.Combine(dirBand, filename);

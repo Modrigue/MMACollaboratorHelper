@@ -562,6 +562,7 @@ namespace MMACollaboratorHelper
 
                 string albumName = bandPage.AlbumsNames[indexAlbum];
                 string albumYear = bandPage.AlbumsYears[indexAlbum];
+                string albumType = bandPage.AlbumsTypes[indexAlbum];
 
                 // check if album already exists
                 if (downloadNewAlbumsOnly_ && existingAlbumsNamesYears.Count > 0)
@@ -588,7 +589,7 @@ namespace MMACollaboratorHelper
 
                 // check if album data is already downloaded
                 {
-                    string downloadFilePath = Tools.DownloadFilePath(band, albumName, albumYear);
+                    string downloadFilePath = Tools.DownloadFilePath(band, albumName, albumYear, albumType);
                     bool infoDownloaded = File.Exists(System.IO.Path.Combine(downloadFilePath + ".txt"));
                     bool coverDownloaded = File.Exists(System.IO.Path.Combine(downloadFilePath + ".jpg"));
 

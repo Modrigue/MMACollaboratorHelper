@@ -105,7 +105,7 @@ namespace MMACollaboratorHelper
             foreach (string band in bandList)
             {
                 // create file names
-                string downloadFilePath = Tools.DownloadFilePath(band, title_, year_);
+                string downloadFilePath = Tools.DownloadFilePath(band, title_, year_, type_);
 
                 string filePath = downloadFilePath + ".txt";
                 writeAlbumContent(filePath);

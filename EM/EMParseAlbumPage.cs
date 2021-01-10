@@ -23,10 +23,10 @@ namespace MMACollaboratorHelper
         string catalogId_;
         string limitation_; // can be empty
         string info_;
-        List<List<string>> songs_;
+        List<List<string>> songs_; // can be empty
         List<List<string>> durations_;
         List<string> discsTotalTimes_;
-        List<string> lineup_;
+        List<string> lineup_; // can be empty
         string coverURL_;
         string albumURL_;
         List<string> altVersionsURLs_;

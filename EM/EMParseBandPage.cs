@@ -12,6 +12,7 @@ namespace MMACollaboratorHelper
         List<string> albumsURLs_;
         List<string> albumsNames_;
         List<string> albumsYears_;
+        List<string> albumsTypes_;
         string genre_;
 
         // parse objects
@@ -42,6 +43,11 @@ namespace MMACollaboratorHelper
         public List<string> AlbumsYears
         {
             get { return albumsYears_; }
+        }
+
+        public List<string> AlbumsTypes
+        {
+            get { return albumsTypes_; }
         }
 
         public string Genre
@@ -158,6 +164,7 @@ namespace MMACollaboratorHelper
             List<string> urls = new List<string>();
             List<string> names = new List<string>();
             List<string> years = new List<string>();
+            List<string> types = new List<string>();
 
             HtmlNode node1 = htmlDocDisco_.DocumentNode.Descendants("tbody").FirstOrDefault();
 
@@ -176,24 +183,33 @@ namespace MMACollaboratorHelper
                     string name = node3.InnerText;
                     names.Add(name);
 
-                    // get album year
+                    // get album year/type
                     string year = ""; // default if not found
-                    foreach (HtmlNode nodeYear in node.Descendants("td"))
+                    string type = ""; // default if not found
+                    foreach (HtmlNode nodeYearType in node.Descendants("td"))
                     {
-                        if (!nodeYear.Attributes.Contains("class")) continue;
+                        if (!String.IsNullOrEmpty(type) && !String.IsNullOrEmpty(year))
+                            break; // ok, done
 
-                        year = nodeYear.InnerText;
-                        if (Tools.IsStringNumerical(year)) // ok, year found
-                            break;
+                        if (!nodeYearType.Attributes.Contains("class"))
+                            continue;
+
+                        string candidate = nodeYearType.InnerText;
+                        if (Tools.IsStringNumerical(candidate))
+                            year = candidate;
+                        else
+                            type = candidate;
                     }
                         
                     years.Add(year);
+                    types.Add(type);
                 }   
             }
 
             albumsURLs_ = urls;
             albumsNames_ = names;
             albumsYears_ = years;
+            albumsTypes_ = types;
         }
 
         #endregion

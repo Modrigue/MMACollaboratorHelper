@@ -619,7 +619,7 @@ namespace MMACollaboratorHelper
                 MMAAlbumDataWriter writer = new MMAAlbumDataWriter(page);
 
                 // handle alternate versions if existing
-                int nbAltVersions = page.AltVersionsURLs.Count;
+                int nbAltVersions = (page.AltVersionsURLs == null) ? 0 : page.AltVersionsURLs.Count;
                 if (nbAltVersions > 0)
                 {
                     Tools.LogEvent("         " + nbAltVersions.ToString() + " alternate version(s) found for \'" + band + " (" + country + ")" + " - " + albumName + "\' (" + albumYear + ")");

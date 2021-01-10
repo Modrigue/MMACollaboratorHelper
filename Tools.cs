@@ -165,6 +165,9 @@ namespace MMACollaboratorHelper
 
         public static string RemoveWindowsForbiddenCharacters(string text)
         {
+            if (String.IsNullOrEmpty(text))
+                return String.Empty;
+
             string newText = text;
 
             newText = newText.Replace("\\", "");

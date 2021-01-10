@@ -151,8 +151,9 @@ namespace MMACollaboratorHelper
 
             // line-up
             text += "Line-up:" + NL;
-            foreach (string member in lineup_)
-                text += member + RC;
+            if (lineup_ != null)
+                foreach (string member in lineup_)
+                    text += member + RC;
 
             // source URL if existing
             if (!String.IsNullOrEmpty(albumURL_))
@@ -233,7 +234,7 @@ namespace MMACollaboratorHelper
             text += RC;
 
             // write discs and songs
-            int nbDiscs = songs.Count;
+            int nbDiscs = (songs == null) ? 0 : songs.Count;
             for (int discIndex = 1; discIndex <= nbDiscs; discIndex++)
             {
                 List<string> discSongs = songs.ElementAt(discIndex - 1);

@@ -12,7 +12,7 @@ namespace MMACollaboratorHelper
         List<string> genreBandsURLs_;
 
         // parse objects
-        HtmlAgilityPack.HtmlDocument htmlDoc_;
+        readonly HtmlAgilityPack.HtmlDocument htmlDoc_;
 
         public List<string> GenreBands
         {

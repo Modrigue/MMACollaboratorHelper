@@ -7,17 +7,17 @@ namespace MMACollaboratorHelper
 {
     public class EMParseBandPage
     {
-        string band_;
-        string country_;
+        readonly string band_;
+        readonly string country_;
         List<string> albumsURLs_;
         List<string> albumsNames_;
         List<string> albumsYears_;
         List<string> albumsTypes_;
-        string genre_;
+        readonly string genre_;
 
         // parse objects
-        HtmlAgilityPack.HtmlDocument htmlDoc_;
-        HtmlAgilityPack.HtmlDocument htmlDocDisco_;
+        readonly HtmlAgilityPack.HtmlDocument htmlDoc_;
+        readonly HtmlAgilityPack.HtmlDocument htmlDocDisco_;
         HtmlNode nodeBandContent_;
 
         public string Band
@@ -97,13 +97,11 @@ namespace MMACollaboratorHelper
 
         private string getBandName()
         {
-            string band = ""; // default
-
             HtmlNode node1 = Tools.NodeWithAttributeAndValue(nodeBandContent_, "div", "id", "band_info");
             HtmlNode node2 = Tools.NodeWithAttributeAndValue(node1, "h1", "class", "band_name");
             if (node2 == null) return "";
 
-            band = Tools.CleanString(node2.InnerText);
+            string band = Tools.CleanString(node2.InnerText);
             return band;
         }
 

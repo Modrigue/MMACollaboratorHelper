@@ -12,7 +12,7 @@ namespace MMACollaboratorHelper
         List<string> albumsNamesYears_;
 
         // parse objects
-        HtmlAgilityPack.HtmlDocument htmlDoc_;
+        readonly HtmlAgilityPack.HtmlDocument htmlDoc_;
 
         public List<string> AlbumsNames
         {

@@ -8,28 +8,28 @@ namespace MMACollaboratorHelper
     public class EMParseAlbumPage
     {
         // band info
-        string country_;
-        string genre_;
+        readonly string country_;
+        readonly string genre_;
 
         // album info
-        string bandName_;
-        string title_;
-        string version_; // can be empty
-        string type_;
-        string year_;
+        readonly string bandName_;
+        readonly string title_;
+        readonly string version_; // can be empty
+        readonly string type_;
+        readonly string year_;
         string releaseDate_;
-        string format_;
-        string label_;
-        string catalogId_;
-        string limitation_; // can be empty
-        string info_;
-        List<List<string>> songs_; // can be empty
-        List<List<string>> durations_;
-        List<string> discsTotalTimes_;
-        List<string> lineup_; // can be empty
-        string coverURL_;
-        string albumURL_;
-        List<string> altVersionsURLs_;
+        readonly string format_;
+        readonly string label_;
+        readonly string catalogId_;
+        readonly string limitation_; // can be empty
+        readonly string info_;
+        readonly List<List<string>> songs_; // can be empty
+        readonly List<List<string>> durations_;
+        readonly List<string> discsTotalTimes_;
+        readonly List<string> lineup_; // can be empty
+        readonly string coverURL_;
+        readonly string albumURL_;
+        readonly List<string> altVersionsURLs_;
 
         #region Accessors
 
@@ -136,7 +136,7 @@ namespace MMACollaboratorHelper
         #endregion
 
         // parse objects
-        HtmlAgilityPack.HtmlDocument htmlDoc_;
+        readonly HtmlAgilityPack.HtmlDocument htmlDoc_;
         HtmlNode nodeAlbumContent_;
         HtmlNode nodeAlbumInfo_;
 
@@ -198,9 +198,7 @@ namespace MMACollaboratorHelper
 
         private string getAlbumTitle()
         {
-            HtmlNode nodeAlbumName = Tools.NodeWithAttributeAndValue(nodeAlbumInfo_, "h1", "class", "album_name");
-            if (nodeAlbumName == null)
-                nodeAlbumName = Tools.NodeWithAttributeAndValue(nodeAlbumInfo_, "h1", "class", "album_name noCaps");
+            HtmlNode nodeAlbumName = Tools.NodeWithAttributeAndValue(nodeAlbumInfo_, "h1", "class", "album_name") ?? Tools.NodeWithAttributeAndValue(nodeAlbumInfo_, "h1", "class", "album_name noCaps");
             if (nodeAlbumName == null) return null;
 
             string albumTitle = Tools.CleanString(nodeAlbumName.InnerText);
@@ -528,10 +526,7 @@ namespace MMACollaboratorHelper
 
             HtmlNode node4 = Tools.NodeWithAttributeAndValue(nodeAlbumContent_, "div", "id", "album_tabs_lineup");
             HtmlNode node5 = Tools.NodeWithAttributeAndValue(node4, "div", "id", "album_members");
-            HtmlNode node6 = Tools.NodeWithAttributeAndValue(node5, "div", "id", "album_all_members_lineup");
-            if (node6 == null) // alt
-                node6 = Tools.NodeWithAttributeAndValue(node5, "div", "id", "album_members_lineup");
-            
+            HtmlNode node6 = Tools.NodeWithAttributeAndValue(node5, "div", "id", "album_all_members_lineup") ?? Tools.NodeWithAttributeAndValue(node5, "div", "id", "album_members_lineup");
             HtmlNode node7 = Tools.NodeWithAttributeAndValue(node6, "div", "class", "ui-tabs-panel-content");
             HtmlNode node8 = Tools.NodeWithAttributeAndValue(node7, "table", "class", "display lineupTable");
             

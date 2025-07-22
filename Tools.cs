@@ -71,8 +71,7 @@ namespace MMACollaboratorHelper
         {
             try
             {
-                if (request_ != null)
-                    request_.Abort();
+                request_?.Abort();
             }
             catch { }
         }
@@ -141,9 +140,7 @@ namespace MMACollaboratorHelper
 
         public static bool IsStringNumerical(string text)
         {
-            int myInt;
-            bool isNumerical = int.TryParse(text, out myInt);
-
+            bool isNumerical = int.TryParse(text, out _);
             return isNumerical;
         }
 

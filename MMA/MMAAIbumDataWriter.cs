@@ -9,29 +9,29 @@ namespace MMACollaboratorHelper
     public class MMAAlbumDataWriter
     {
         // band info
-        string country_;
-        string genre_;
+        readonly string country_;
+        readonly string genre_;
 
         // album info
-        string bandName_;
-        string title_;
-        string type_;
-        string year_;
-        string releaseDate_;
-        string format_;
-        string label_;
-        string catalogId_;
-        string limitation_; // can be empty
-        string info_;
-        List<List<string>> songs_;
-        List<List<string>> durations_;
-        List<string> discsTotalTimes_;
-        List<string> lineup_;
-        string coverURL_;
-        string albumURL_;
+        readonly string bandName_;
+        readonly string title_;
+        readonly string type_;
+        readonly string year_;
+        readonly string releaseDate_;
+        readonly string format_;
+        readonly string label_;
+        readonly string catalogId_;
+        readonly string limitation_; // can be empty
+        readonly string info_;
+        readonly List<List<string>> songs_;
+        readonly List<List<string>> durations_;
+        readonly List<string> discsTotalTimes_;
+        readonly List<string> lineup_;
+        readonly string coverURL_;
+        readonly string albumURL_;
 
         // alternate versions
-        List<AlternateVersion> altVersions_;
+        readonly List<AlternateVersion> altVersions_;
 
         public MMAAlbumDataWriter(EMParseAlbumPage parsedAlbumPage)
         {
@@ -82,8 +82,10 @@ namespace MMACollaboratorHelper
         // write album infos (data + cover image)
         public void WriteAlbumData()
         {
-            List<string> bandList = new List<string>();
-            bandList.Add(bandName_); // default
+            List<string> bandList = new List<string>
+            {
+                bandName_ // default
+            };
 
             // detect if split album
             if (String.Compare(type_, "split", StringComparison.OrdinalIgnoreCase) == 0
@@ -298,17 +300,17 @@ namespace MMACollaboratorHelper
     // used for alternate versions
     class AlternateVersion
     {
-        string version;
-        string year;
-        string releaseDate;
-        string format;
-        string label;
-        string catalogID;
-        string limitation;
-        string info;
-        List<List<string>> songs;
-        List<List<string>> durations;
-        List<string> discsTotalTimes;
+        readonly string version;
+        readonly string year;
+        readonly string releaseDate;
+        readonly string format;
+        readonly string label;
+        readonly string catalogID;
+        readonly string limitation;
+        readonly string info;
+        readonly List<List<string>> songs;
+        readonly List<List<string>> durations;
+        readonly List<string> discsTotalTimes;
 
         public string Version
         {

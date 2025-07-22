@@ -6,12 +6,12 @@ namespace MMACollaboratorHelper
 {
     public class EMParseBandHomonymsPage
     {
-        string band_;
-        //List<string> countries_;
+        readonly string band_;
+        readonly //List<string> countries_;
         List<string> homonymsURLs_;
 
         // parse objects
-        HtmlAgilityPack.HtmlDocument htmlDoc_;
+        readonly HtmlAgilityPack.HtmlDocument htmlDoc_;
         HtmlNode nodeContents_;
 
         public string Band
@@ -51,15 +51,13 @@ namespace MMACollaboratorHelper
 
         public string GetBandNameFromNonHomonymPage()
         {
-            string band = ""; // default
-
             HtmlNode nodeBandContent = Tools.NodeWithAttributeAndValue(nodeContents_, "div", "id", "band_content");
 
             HtmlNode node1 = Tools.NodeWithAttributeAndValue(nodeBandContent, "div", "id", "band_info");
             HtmlNode node2 = Tools.NodeWithAttributeAndValue(node1, "h1", "class", "band_name");
             if (node2 == null) return "";
 
-            band = Tools.CleanString(node2.InnerText);
+            string band = Tools.CleanString(node2.InnerText);
             return band;
         }
 
@@ -73,12 +71,10 @@ namespace MMACollaboratorHelper
 
         private string getBandName()
         {
-            string band = ""; // default
-
             HtmlNode node1 = Tools.NodeWithAttributeAndValue(nodeContents_, "h1", "class", "page_title");
             if (node1 == null) return "";
 
-            band = Tools.CleanString(node1.InnerText);
+            string band = Tools.CleanString(node1.InnerText);
             return band;
         }
 

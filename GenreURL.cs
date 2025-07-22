@@ -3,8 +3,8 @@
     // used for genres combo box
     public class GenreURL
     {
-        string genre;
-        string url;
+        readonly string genre;
+        readonly string url;
 
         public string Genre
         {

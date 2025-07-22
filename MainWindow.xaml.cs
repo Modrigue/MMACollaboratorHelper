@@ -135,8 +135,7 @@ namespace MMACollaboratorHelper
             // stop process
             if (isProcessing_)
             {
-                if (threadProcess_ != null)
-                    threadProcess_.Abort();
+                threadProcess_?.Abort();
 
                 Tools.AbortWebRequest();
 
@@ -207,8 +206,7 @@ namespace MMACollaboratorHelper
 
         private void buttonQuit_Click(object sender, RoutedEventArgs e)
         {
-            if (threadProcess_ != null)
-                threadProcess_.Abort();
+            threadProcess_?.Abort();
 
             Tools.AbortWebRequest();
 
@@ -367,11 +365,9 @@ namespace MMACollaboratorHelper
 
         private void processBandFrontPage(string bandNameOrUrl, string existingBandURLSuffix = "")
         {
-            string urlBand = "";
-            string logText = "";
-
             bool isURL = Tools.IsStringURL(bandNameOrUrl);
 
+            string urlBand;
             if (isURL)
             {
                 // search by band URL
@@ -460,8 +456,8 @@ namespace MMACollaboratorHelper
                 // search by band prefix
                 sendProcessBandParams(bandNameOrUrl);
 
-                logText = String.IsNullOrEmpty(existingBandURLSuffix) ?
-                    "BAND " + bandNameOrUrl + " NOT EXISTING" : " ";
+                string logText = String.IsNullOrEmpty(existingBandURLSuffix) ?
+        "BAND " + bandNameOrUrl + " NOT EXISTING" : " ";
                 Tools.LogEvent(logText);
                 Tools.LogEvent("PROCESSING BAND " + bandNameOrUrl + "...");
 
@@ -664,21 +660,18 @@ namespace MMACollaboratorHelper
 
         private void sendSearchBandsParams(string bandPrefix)
         {
-            if (OnSearchBandsParams != null)
-                OnSearchBandsParams(bandPrefix, null);
+            OnSearchBandsParams?.Invoke(bandPrefix, null);
         }
 
         private void sendProcessBandParams(string band)
         {
-            if (OnProcessBandParams != null)
-                OnProcessBandParams(band, null);
+            OnProcessBandParams?.Invoke(band, null);
         }
 
         private void sendProcessAlbumParams(string band, int index, int nbAlbums)
         {
             Tuple<string, int, int> values = Tuple.Create(band, index, nbAlbums);
-            if (OnProcessAlbumParams != null)
-                OnProcessAlbumParams(values, null);
+            OnProcessAlbumParams?.Invoke(values, null);
         }
 
         void Form1_OnSearchBandsParams(object sender, EventArgs e)
